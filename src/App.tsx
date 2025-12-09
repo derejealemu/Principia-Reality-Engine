@@ -19,7 +19,6 @@ const App: React.FC = () => {
   const [history, setHistory] = useState<VisualizationData[]>([]);
   const [isSharedView, setIsSharedView] = useState(false);
 
-  // Load history, API key, and check URL hash on mount
   useEffect(() => {
     try {
       const storedHistory = localStorage.getItem(STORAGE_KEY);
@@ -32,7 +31,6 @@ const App: React.FC = () => {
         setApiKey(storedKey);
       }
 
-      // Check for Shared State in URL
       if (window.location.hash && window.location.hash.length > 1) {
         try {
           const base64Data = window.location.hash.substring(1);
@@ -45,9 +43,6 @@ const App: React.FC = () => {
             setViewSettings(sharedState.c || { zoom: 12, autoRotate: false });
             setState(AppState.VISUALIZING);
             setIsSharedView(true);
-            
-            // Remove hash to clean URL but keep state
-            // window.history.replaceState(null, '', window.location.pathname);
           }
         } catch (e) {
           console.error("Failed to parse shared URL", e);
@@ -80,7 +75,7 @@ const App: React.FC = () => {
     setCurrentParams({});
     setViewSettings({ zoom: 12, autoRotate: false });
     setError(null);
-    window.history.replaceState(null, '', window.location.pathname); // Clear shared URL
+    window.history.replaceState(null, '', window.location.pathname);
     setIsSharedView(false);
   };
 
@@ -93,7 +88,6 @@ const App: React.FC = () => {
     try {
       const rawData = await generatePhysicsVisualization(topic, apiKey);
       
-      // Add metadata for persistence
       const newData: VisualizationData = {
         ...rawData,
         id: crypto.randomUUID(),
@@ -102,7 +96,6 @@ const App: React.FC = () => {
 
       setVizData(newData);
       
-      // Initialize params from controls
       const initialParams: Record<string, number | boolean> = {};
       if (newData.controls) {
         newData.controls.forEach(c => {
@@ -121,7 +114,7 @@ const App: React.FC = () => {
       
       if (err.message && err.message.includes("API key")) {
         errorMsg = "Invalid API Key. Please check your settings.";
-        setApiKey(null); // Reset key if invalid
+        setApiKey(null);
         localStorage.removeItem(API_KEY_STORAGE);
       } else if (err.status === 429) {
          errorMsg = "Rate limit exceeded. Please wait a moment.";
@@ -179,10 +172,8 @@ const App: React.FC = () => {
   return (
     <div className="relative w-full h-screen bg-cosmos-900 text-white overflow-hidden">
       
-      {/* API Key Modal Gate - Show if no key AND not viewing a shared link */}
       {!apiKey && !isSharedView && <ApiKeyModal onSave={handleSaveApiKey} />}
 
-      {/* Background / Canvas */}
       <div className="absolute inset-0 z-0">
         <VisualizationCanvas 
           data={vizData} 
@@ -191,7 +182,6 @@ const App: React.FC = () => {
         />
       </div>
 
-      {/* UI Layer (Show if key exists OR viewing shared link) */}
       {(apiKey || isSharedView) && (
         <ControlPanel 
           state={state} 
@@ -210,10 +200,8 @@ const App: React.FC = () => {
         />
       )}
 
-      {/* Loading Overlay */}
       {state === AppState.GENERATING && <Loader />}
 
-      {/* Error Toast */}
       {state === AppState.ERROR && (
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-red-900/80 border border-red-500 text-white px-6 py-4 rounded-xl backdrop-blur shadow-lg z-50 animate-bounce">
           <p className="font-bold">Error</p>
@@ -227,7 +215,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Initial Empty State / Welcome */}
       {state === AppState.IDLE && (apiKey || isSharedView) && (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none z-10 w-full px-4">
           <div className="text-8xl md:text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white/20 to-white/5 select-none tracking-tighter">

@@ -64,7 +64,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   const [isUIHidden, setIsUIHidden] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
 
-  // Auto-switch to controls tab if controls exist when a new viz loads
   useEffect(() => {
     if (controls && controls.length > 0) {
       setActiveTab('controls');
@@ -73,7 +72,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     }
   }, [controls]);
 
-  // Auto-expand and reset when returning to Home (IDLE state with no title)
   useEffect(() => {
     if (state === AppState.IDLE && !currentTitle) {
       setIsExpanded(true);
@@ -121,7 +119,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     setTimeout(() => setShowCopied(false), 2000);
   };
 
-  // Minimized Floating Button
   if (isUIHidden) {
     return (
       <button 
@@ -138,7 +135,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     <div className="absolute top-0 left-0 z-40 p-4 w-full md:w-[400px] max-h-screen overflow-y-auto pointer-events-none custom-scrollbar">
       <div className="pointer-events-auto bg-cosmos-900/90 backdrop-blur-md border border-cosmos-500/50 rounded-2xl shadow-2xl shadow-neon-blue/10 overflow-hidden transition-all duration-500 ease-out">
         
-        {/* Header / Search Area */}
         <div className="p-5 pb-4">
           <div className="flex items-center justify-between mb-4">
             <button 
@@ -216,7 +212,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             </button>
           </form>
           
-          {/* Toolbar for Share / Actions */}
           {currentTitle && (
             <div className="flex justify-end mb-2">
                <button 
@@ -229,7 +224,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             </div>
           )}
           
-          {/* Example Suggestions (Only show when IDLE and expanded) */}
           {state === AppState.IDLE && isExpanded && !currentTitle && (
              <div className="mt-4 border-t border-cosmos-500/30 pt-3">
                <p className="text-[10px] text-cosmos-400 mb-3 font-semibold uppercase tracking-wider flex items-center gap-2">
@@ -259,10 +253,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           )}
         </div>
 
-        {/* Content Area */}
         <div className={`border-t border-cosmos-500/30 bg-cosmos-950/30 transition-all duration-500 overflow-hidden ${isExpanded ? 'max-h-[60vh] opacity-100' : 'max-h-0 opacity-0'}`}>
            
-           {/* Tab: Info */}
            {activeTab === 'info' && (
              <div className="p-6 pt-4 overflow-y-auto h-full max-h-[60vh] custom-scrollbar">
                 {state === AppState.GENERATING ? (
@@ -286,12 +278,10 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
              </div>
            )}
 
-           {/* Tab: View Settings */}
            {activeTab === 'view' && (
              <div className="p-6 pt-4 overflow-y-auto h-full max-h-[60vh] custom-scrollbar">
                <div className="space-y-6">
                  
-                 {/* Zoom Control */}
                  <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <label className="text-sm font-medium text-neon-blue flex items-center gap-2">
@@ -314,7 +304,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                     </div>
                  </div>
 
-                 {/* Auto Rotate */}
                  <div className="flex justify-between items-center p-3 bg-cosmos-800/30 rounded-lg border border-cosmos-500/20">
                    <label className="text-sm font-medium text-cosmos-100 flex items-center gap-2">
                      <RotateCcw size={14} className={viewSettings.autoRotate ? "animate-spin" : ""} style={{animationDuration: "3s"}}/> 
@@ -328,7 +317,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                    </button>
                  </div>
 
-                 {/* Reset */}
                  <button 
                    onClick={resetView}
                    className="w-full py-2 rounded-lg border border-cosmos-500/50 hover:bg-cosmos-700 text-cosmos-300 hover:text-white text-xs transition-colors flex items-center justify-center gap-2"
@@ -340,7 +328,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
              </div>
            )}
 
-           {/* Tab: Controls */}
            {activeTab === 'controls' && (
              <div className="p-6 pt-4 overflow-y-auto h-full max-h-[60vh] custom-scrollbar">
                {controls && controls.length > 0 && currentParams ? (
@@ -377,7 +364,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
              </div>
            )}
 
-           {/* Tab: History */}
            {activeTab === 'history' && (
               <div className="p-2 overflow-y-auto h-full max-h-[60vh] custom-scrollbar">
                 {history.length === 0 ? (
@@ -397,7 +383,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                             {item.title}
                           </span>
                           <span className="text-[10px] text-cosmos-500 flex items-center gap-1">
-                            {/* <Clock size={10} /> */}
                             {new Date(item.timestamp).toLocaleDateString()}
                           </span>
                         </div>
@@ -413,7 +398,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         </div>
       </div>
       
-      {/* Hint when collapsed but NOT hidden */}
       {!isExpanded && currentTitle && (
          <div className="pointer-events-auto mt-2 flex gap-2">
             <button 
