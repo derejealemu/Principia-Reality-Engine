@@ -21,28 +21,35 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
   const composerRef = useRef<EffectComposer | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
   
+  // We need a ref for params so the animation loop accesses the latest values without closure staleness
   const paramsRef = useRef(params);
 
   useEffect(() => {
     paramsRef.current = params;
   }, [params]);
   
+  // Update camera distance based on zoom setting
   useEffect(() => {
     if (!cameraRef.current || !controlsRef.current) return;
+    
     const controls = controlsRef.current;
     const camera = cameraRef.current;
     
+    // Calculate current direction vector from target to camera
     const direction = new THREE.Vector3()
       .subVectors(camera.position, controls.target)
       .normalize();
       
+    // Scale direction by new zoom distance
     const newPos = new THREE.Vector3()
       .copy(controls.target)
       .add(direction.multiplyScalar(viewSettings.zoom));
       
     camera.position.copy(newPos);
+    
   }, [viewSettings.zoom]);
 
+  // Update Auto Rotate
   useEffect(() => {
     if (controlsRef.current) {
       controlsRef.current.autoRotate = viewSettings.autoRotate;
@@ -50,6 +57,7 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
     }
   }, [viewSettings.autoRotate]);
   
+  // Initialize Three.js context once
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -63,6 +71,7 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
       0.1,
       1000
     );
+    // Initial pos
     camera.position.z = viewSettings.zoom;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -71,24 +80,27 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
     renderer.toneMapping = THREE.ReinhardToneMapping;
     containerRef.current.appendChild(renderer.domElement);
 
+    // Orbit Controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.enableZoom = true;
     controls.autoRotate = viewSettings.autoRotate;
 
+    // Post Processing (Bloom)
     const renderScene = new RenderPass(scene, camera);
     const bloomPass = new UnrealBloomPass(
       new THREE.Vector2(containerRef.current.clientWidth, containerRef.current.clientHeight),
-      1.5,
-      0.4,
-      0.85
+      1.5,  // strength
+      0.4,  // radius
+      0.85  // threshold
     );
     
     const composer = new EffectComposer(renderer);
     composer.addPass(renderScene);
     composer.addPass(bloomPass);
 
+    // Default Lights
     const ambientLight = new THREE.AmbientLight(0x404040, 2);
     scene.add(ambientLight);
     const dirLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -122,6 +134,7 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
     };
   }, []);
 
+  // Run Generated Code or Idle Animation
   useEffect(() => {
     if (!sceneRef.current || !cameraRef.current || !rendererRef.current || !controlsRef.current) return;
 
@@ -130,10 +143,12 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
     const renderer = rendererRef.current;
     const controls = controlsRef.current;
 
+    // 1. Cleanup - Remove old objects
     for(let i = scene.children.length - 1; i >= 0; i--){ 
       const obj = scene.children[i];
       if (!(obj instanceof THREE.Light)) {
          scene.remove(obj);
+         // Optional: dispose geometry/material resources here to prevent leaks
          if ((obj as any).geometry) (obj as any).geometry.dispose();
          if ((obj as any).material) {
            if (Array.isArray((obj as any).material)) {
@@ -144,39 +159,46 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
          }
       }
     }
+    // Reset camera to current zoom setting
     controls.reset();
     camera.position.set(0, 0, viewSettings.zoom);
     camera.rotation.set(0, 0, 0);
     
     let animationFn: Function | null = null;
 
+    // 2. Determine Mode (Idle vs Generated)
     if (!data) {
-      const archetype = Math.floor(Math.random() * 3); 
+      // --- IDLE MODE: Procedural Background ---
+      // Choose a random archetype
+      const archetype = Math.floor(Math.random() * 3); // 0: Quantum Cloud, 1: Spiral, 2: Hyper-Torus
+
       const particleCount = 3000;
       const geometry = new THREE.BufferGeometry();
       const positions = new Float32Array(particleCount * 3);
       const colors = new Float32Array(particleCount * 3);
       const sizes = new Float32Array(particleCount);
-      const color1 = new THREE.Color(0x00f3ff); 
-      const color2 = new THREE.Color(0xbc13fe); 
+
+      const color1 = new THREE.Color(0x00f3ff); // Neon Blue
+      const color2 = new THREE.Color(0xbc13fe); // Neon Purple
 
       for (let i = 0; i < particleCount; i++) {
         let x=0, y=0, z=0;
-        if (archetype === 0) { 
+
+        if (archetype === 0) { // Quantum Cloud (Sphere with noise)
           const r = 5 * Math.cbrt(Math.random());
           const theta = Math.random() * Math.PI * 2;
           const phi = Math.acos(2 * Math.random() - 1);
           x = r * Math.sin(phi) * Math.cos(theta);
           y = r * Math.sin(phi) * Math.sin(theta);
           z = r * Math.cos(phi);
-        } else if (archetype === 1) { 
+        } else if (archetype === 1) { // Galactic Spiral
           const r = Math.random() * 8;
-          const theta = r * 2 + (Math.random() - 0.5) + (i % 2 === 0 ? 0 : Math.PI);
+          const theta = r * 2 + (Math.random() - 0.5) + (i % 2 === 0 ? 0 : Math.PI); // 2 arms
           const yOffset = (Math.random() - 0.5) * (10 - r) * 0.5;
           x = r * Math.cos(theta);
           y = yOffset;
           z = r * Math.sin(theta);
-        } else if (archetype === 2) { 
+        } else if (archetype === 2) { // Hyper-Torus
            const u = Math.random() * Math.PI * 2;
            const v = Math.random() * Math.PI * 2;
            const R = 5; 
@@ -190,10 +212,12 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
         positions[i * 3 + 1] = y;
         positions[i * 3 + 2] = z;
 
+        // Mix colors based on position
         const mixedColor = color1.clone().lerp(color2, Math.random());
         colors[i * 3] = mixedColor.r;
         colors[i * 3 + 1] = mixedColor.g;
         colors[i * 3 + 2] = mixedColor.b;
+
         sizes[i] = Math.random() * 0.15;
       }
 
@@ -214,52 +238,95 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
       points.name = "idle_viz";
       scene.add(points);
       
-      animationFn = (scene: THREE.Scene, camera: THREE.Camera, renderer: THREE.Renderer, THREE: any, time: number) => {
+      // Idle Animation Function
+      // Renamed unused params to _camera, _renderer, _THREE to satisfy strict TypeScript rules
+      animationFn = (scene: THREE.Scene, _camera: THREE.Camera, _renderer: THREE.WebGLRenderer, _THREE: any, time: number) => {
         const p = scene.getObjectByName("idle_viz");
         if (p) {
+          // Rotate
           p.rotation.y = time * 0.05;
           p.rotation.z = time * 0.02;
+
+          // Pulse positions
+          // const positions = (p as THREE.Points).geometry.attributes.position.array as Float32Array;
+          // for(let i=0; i<particleCount; i++) {
+             // Simple wave distortion...
+          // }
+          // (p as THREE.Points).geometry.attributes.position.needsUpdate = true;
         }
       };
       
+      // Reset Camera for idle
       controls.autoRotate = true;
       controls.autoRotateSpeed = 0.5;
 
     } else {
+      // --- GENERATED MODE: Execute Gemini Code ---
       try {
-        const setupFunction = new Function('scene', 'camera', 'renderer', 'THREE', data.setupCode);
+        const setupFunction = new Function(
+          'scene', 
+          'camera', 
+          'renderer', 
+          'THREE', 
+          data.setupCode
+        );
+        
         setupFunction(scene, camera, renderer, THREE);
+  
         if (data.animationCode) {
-          animationFn = new Function('scene', 'camera', 'renderer', 'THREE', 'time', 'params', data.animationCode);
+          animationFn = new Function(
+              'scene', 
+              'camera', 
+              'renderer', 
+              'THREE', 
+              'time', 
+              'params',
+              data.animationCode
+          );
         }
+  
       } catch (err) {
         console.error("Error executing generated visualization code:", err);
       }
+      
+      // Ensure auto-rotate matches view settings in Generated mode
       controls.autoRotate = viewSettings.autoRotate;
       controls.autoRotateSpeed = 2.0;
     }
 
+    // 3. Animation Loop
     const clock = new THREE.Clock();
     
     const animate = () => {
       requestRef.current = requestAnimationFrame(animate);
+      
       const time = clock.getElapsedTime();
-      if (controlsRef.current) controlsRef.current.update();
+      
+      if (controlsRef.current) {
+        controlsRef.current.update();
+      }
+
       if (animationFn) {
         try {
+          // Pass paramsRef.current so it's always fresh
           animationFn(scene, camera, renderer, THREE, time, paramsRef.current);
         } catch (e) {
+          console.error("Animation loop error", e);
           if(requestRef.current) cancelAnimationFrame(requestRef.current);
           return;
         }
       }
+      
+      // Use composer for bloom effect instead of raw renderer
       if (composerRef.current) {
         composerRef.current.render();
       } else {
         renderer.render(scene, camera);
       }
     };
+
     animate();
+
     return () => {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
