@@ -36,7 +36,7 @@ Principia is a next-generation visualization tool that bridges the gap between a
 
 ### Prerequisites
 
-*   Node.js (v18 or higher)
+*   Node.js  (v18 or higher)
 *   A Google AI Studio API Key (Get one [here](https://aistudio.google.com/app/apikey))
 
 ### Installation
