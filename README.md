@@ -4,8 +4,7 @@
 
 Principia is a next-generation visualization tool that bridges the gap between abstract theoretical physics and visceral visual intuition. By combining **Google Gemini 3 Pro** with **Three.js**, it allows users to input any scientific concept—from "Quantum Entanglement" to "Non-Euclidean Geometry"—and instantly generates a hyper-realistic, interactive 3D simulation in real-time.
 
-![Principia Banner](https://via.placeholder.com/1200x600/050510/00f3ff?text=PRINCIPIA+Visualization+Engine)
-*(Replace this link with a screenshot of your app)*
+![Principia Banner](banner.png)
 
 ---
 
@@ -44,8 +43,8 @@ Principia is a next-generation visualization tool that bridges the gap between a
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/yourusername/principia.git
-    cd principia
+    git clone https://github.com/derejealemu/Principia-Reality-Engine.git
+    cd Principia-Reality-Engine
     ```
 
 2.  **Install dependencies**
