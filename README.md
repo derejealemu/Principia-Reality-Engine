@@ -4,9 +4,36 @@
 
 Principia is a next-generation visualization tool that bridges the gap between abstract theoretical physics and visceral visual intuition. By combining **Google Gemini 3 Pro** with **Three.js**, it allows users to input any scientific concept—from "Quantum Entanglement" to "Non-Euclidean Geometry"—and instantly generates a hyper-realistic, interactive 3D simulation in real-time.
 
-![Principia Banner](banner.png)
-
----
+<div>
+<svg width="1200" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#050510;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f0f25;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="600" fill="url(#bgGrad)" />
+  
+  <!-- Abstract Particles -->
+  <circle cx="200" cy="200" r="2" fill="#00f3ff" opacity="0.5" />
+  <circle cx="800" cy="100" r="3" fill="#bc13fe" opacity="0.6" />
+  <circle cx="1000" cy="500" r="2" fill="#00f3ff" opacity="0.4" />
+  <circle cx="100" cy="500" r="4" fill="#ff0055" opacity="0.3" />
+  
+  <!-- Central Typography -->
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="120" fill="url(#bgGrad)" stroke="#2a2a5a" stroke-width="2" letter-spacing="-5">PRINCIPIA</text>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="120" fill="none" stroke="white" stroke-opacity="0.1" letter-spacing="-5">PRINCIPIA</text>
+  
+  <text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" font-family="monospace" font-size="20" fill="#00f3ff" letter-spacing="10" filter="url(#glow)">G-3 REALITY ENGINE</text>
+</svg>
+</div>
 
 ## ✨ Features
 
