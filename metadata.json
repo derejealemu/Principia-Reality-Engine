@@ -1,0 +1,5 @@
+{
+  "name": "Principia",
+  "description": "An AI-powered visualization tool that uses Gemini 3 Pro to generate real-time, interactive Three.js visualizations of complex physics concepts.",
+  "requestFramePermissions": []
+}
