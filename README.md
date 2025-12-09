@@ -4,8 +4,8 @@
 
 Principia is a next-generation visualization tool that bridges the gap between abstract theoretical physics and visceral visual intuition. By combining **Google Gemini 3 Pro** with **Three.js**, it allows users to input any scientific concept—from "Quantum Entanglement" to "Non-Euclidean Geometry"—and instantly generates a hyper-realistic, interactive 3D simulation in real-time.
 
-<div>
-![Principia Banner](banner.svg)
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="banner.svg" />
 </div>
 
 ## ✨ Features
