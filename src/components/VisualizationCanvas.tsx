@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { VisualizationData, ViewSettings } from '../types';
 
 interface VisualizationCanvasProps {
@@ -246,13 +246,6 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
           // Rotate
           p.rotation.y = time * 0.05;
           p.rotation.z = time * 0.02;
-
-          // Pulse positions
-          // const positions = (p as THREE.Points).geometry.attributes.position.array as Float32Array;
-          // for(let i=0; i<particleCount; i++) {
-             // Simple wave distortion...
-          // }
-          // (p as THREE.Points).geometry.attributes.position.needsUpdate = true;
         }
       };
       

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -240,23 +239,13 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
       scene.add(points);
       
       // Idle Animation Function
-      animationFn = (scene: THREE.Scene, camera: THREE.Camera, renderer: THREE.Renderer, THREE: any, time: number) => {
+      // Renamed unused params to _camera, _renderer, _THREE to satisfy strict TypeScript rules
+      animationFn = (scene: THREE.Scene, _camera: THREE.Camera, _renderer: THREE.WebGLRenderer, _THREE: any, time: number) => {
         const p = scene.getObjectByName("idle_viz");
         if (p) {
           // Rotate
           p.rotation.y = time * 0.05;
           p.rotation.z = time * 0.02;
-
-          // Pulse positions
-          const positions = (p as THREE.Points).geometry.attributes.position.array as Float32Array;
-          for(let i=0; i<particleCount; i++) {
-             // Simple wave distortion based on initial shape logic would be expensive to recompute fully,
-             // so we just add a subtle noise-like jitter or breathe effect
-             const ix = i*3;
-             // Breathing effect
-             // positions[ix] *= 1 + Math.sin(time + i)*0.0001; // Very subtle
-          }
-          (p as THREE.Points).geometry.attributes.position.needsUpdate = true;
         }
       };
       
