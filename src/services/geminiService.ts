@@ -73,7 +73,7 @@ export const generatePhysicsVisualization = async (topic: string, apiKey: string
       contents: prompt,
       config: {
         systemInstruction: systemInstruction,
-        thinkingConfig: { thinkingBudget: 4096 }, 
+        thinkingConfig: { thinkingBudget: 4096 },
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -90,7 +90,7 @@ export const generatePhysicsVisualization = async (topic: string, apiKey: string
                 properties: {
                   id: { type: Type.STRING },
                   label: { type: Type.STRING },
-                  type: { type: Type.STRING, enum: ["range"] }, 
+                  type: { type: Type.STRING, enum: ["range", "boolean"] },
                   min: { type: Type.NUMBER },
                   max: { type: Type.NUMBER },
                   step: { type: Type.NUMBER },

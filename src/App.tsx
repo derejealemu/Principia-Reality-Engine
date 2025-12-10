@@ -14,7 +14,7 @@ const App: React.FC = () => {
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [vizData, setVizData] = useState<VisualizationData | null>(null);
   const [currentParams, setCurrentParams] = useState<Record<string, number | boolean>>({});
-  const [viewSettings, setViewSettings] = useState<ViewSettings>({ zoom: 12, autoRotate: false });
+  const [viewSettings, setViewSettings] = useState<ViewSettings>({ zoom: 12, autoRotate: false, bloomStrength: 0.8 });
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<VisualizationData[]>([]);
   const [isSharedView, setIsSharedView] = useState(false);
@@ -25,7 +25,7 @@ const App: React.FC = () => {
       if (storedHistory) {
         setHistory(JSON.parse(storedHistory));
       }
-      
+
       const storedKey = localStorage.getItem(API_KEY_STORAGE);
       if (storedKey) {
         setApiKey(storedKey);
@@ -40,7 +40,7 @@ const App: React.FC = () => {
           if (sharedState.v) {
             setVizData(sharedState.v);
             setCurrentParams(sharedState.p || {});
-            setViewSettings(sharedState.c || { zoom: 12, autoRotate: false });
+            setViewSettings(sharedState.c || { zoom: 12, autoRotate: false, bloomStrength: 0.8 });
             setState(AppState.VISUALIZING);
             setIsSharedView(true);
           }
@@ -73,7 +73,7 @@ const App: React.FC = () => {
     setVizData(null);
     setState(AppState.IDLE);
     setCurrentParams({});
-    setViewSettings({ zoom: 12, autoRotate: false });
+    setViewSettings({ zoom: 12, autoRotate: false, bloomStrength: 0.8 });
     setError(null);
     window.history.replaceState(null, '', window.location.pathname);
     setIsSharedView(false);
@@ -84,10 +84,10 @@ const App: React.FC = () => {
 
     setState(AppState.GENERATING);
     setError(null);
-    
+
     try {
       const rawData = await generatePhysicsVisualization(topic, apiKey);
-      
+
       const newData: VisualizationData = {
         ...rawData,
         id: crypto.randomUUID(),
@@ -95,7 +95,7 @@ const App: React.FC = () => {
       };
 
       setVizData(newData);
-      
+
       const initialParams: Record<string, number | boolean> = {};
       if (newData.controls) {
         newData.controls.forEach(c => {
@@ -111,13 +111,13 @@ const App: React.FC = () => {
     } catch (err: any) {
       console.error(err);
       let errorMsg = "Failed to visualize the concept. The cosmos is unclear.";
-      
+
       if (err.message && err.message.includes("API key")) {
         errorMsg = "Invalid API Key. Please check your settings.";
         setApiKey(null);
         localStorage.removeItem(API_KEY_STORAGE);
       } else if (err.status === 429) {
-         errorMsg = "Rate limit exceeded. Please wait a moment.";
+        errorMsg = "Rate limit exceeded. Please wait a moment.";
       }
 
       setError(errorMsg);
@@ -127,7 +127,7 @@ const App: React.FC = () => {
 
   const handleSelectHistory = (item: VisualizationData) => {
     setVizData(item);
-    
+
     const initialParams: Record<string, number | boolean> = {};
     if (item.controls) {
       item.controls.forEach(c => {
@@ -151,18 +151,18 @@ const App: React.FC = () => {
 
   const handleShare = () => {
     if (!vizData) return;
-    
+
     const sharedState: SharedState = {
       v: vizData,
       p: currentParams,
       c: viewSettings
     };
-    
+
     try {
       const jsonString = JSON.stringify(sharedState);
       const base64Data = btoa(jsonString);
       const url = `${window.location.origin}${window.location.pathname}#${base64Data}`;
-      
+
       navigator.clipboard.writeText(url);
     } catch (e) {
       console.error("Failed to generate share link", e);
@@ -171,22 +171,22 @@ const App: React.FC = () => {
 
   return (
     <div className="relative w-full h-screen bg-cosmos-900 text-white overflow-hidden">
-      
+
       {!apiKey && !isSharedView && <ApiKeyModal onSave={handleSaveApiKey} />}
 
       <div className="absolute inset-0 z-0">
-        <VisualizationCanvas 
-          data={vizData} 
-          params={currentParams} 
+        <VisualizationCanvas
+          data={vizData}
+          params={currentParams}
           viewSettings={viewSettings}
         />
       </div>
 
       {(apiKey || isSharedView) && (
-        <ControlPanel 
-          state={state} 
-          onGenerate={handleGenerate} 
-          currentTitle={vizData?.title} 
+        <ControlPanel
+          state={state}
+          onGenerate={handleGenerate}
+          currentTitle={vizData?.title}
           currentExplanation={vizData?.explanation}
           controls={vizData?.controls}
           currentParams={currentParams}
@@ -206,7 +206,7 @@ const App: React.FC = () => {
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-red-900/80 border border-red-500 text-white px-6 py-4 rounded-xl backdrop-blur shadow-lg z-50 animate-bounce">
           <p className="font-bold">Error</p>
           <p className="text-sm">{error}</p>
-          <button 
+          <button
             onClick={() => setState(AppState.IDLE)}
             className="mt-2 text-xs underline hover:text-red-200"
           >

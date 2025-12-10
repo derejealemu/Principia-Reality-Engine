@@ -22,6 +22,7 @@ export interface VisualizationData {
 export interface ViewSettings {
   zoom: number;
   autoRotate: boolean;
+  bloomStrength: number;
 }
 
 export interface SharedState {
