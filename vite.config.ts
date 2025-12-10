@@ -7,9 +7,10 @@ export default defineConfig({
     react(),
     {
       name: 'strip-import-map',
+      enforce: 'pre', // Force this to run before other plugins
       transformIndexHtml(html) {
         // Automatically remove the importmap if the environment re-injects it
-        return html.replace(/<script type="importmap">[\s\S]*?<\/script>/, '');
+        return html.replace(/<script type="importmap">[\s\S]*?<\/script>/gi, '');
       }
     }
   ],
