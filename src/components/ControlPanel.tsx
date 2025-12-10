@@ -111,7 +111,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   };
 
   const resetView = () => {
-    onViewSettingsChange({ zoom: 12, autoRotate: false, bloomStrength: 0.8 });
+    onViewSettingsChange({ zoom: 12, autoRotate: false, bloomStrength: 0.8, color1: '#00f3ff', color2: '#bc13fe' });
   };
 
   const handleShareClick = () => {
@@ -124,7 +124,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     return (
       <button
         onClick={() => setIsUIHidden(false)}
-        className="absolute top-4 left-4 z-50 p-3 bg-cosmos-800/90 backdrop-blur-md border border-cosmos-500/50 rounded-xl text-neon-blue hover:text-white hover:shadow-[0_0_15px_rgba(0,243,255,0.3)] transition-all"
+        className="absolute bottom-4 md:top-4 left-4 z-50 p-3 bg-cosmos-800/90 backdrop-blur-md border border-cosmos-500/50 rounded-xl text-neon-blue hover:text-white hover:shadow-[0_0_15px_rgba(0,243,255,0.3)] transition-all"
         title="Show Controls"
       >
         <PanelLeftOpen size={24} />
@@ -133,7 +133,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   }
 
   return (
-    <div className="absolute top-0 left-0 z-40 p-4 w-full md:w-[400px] max-h-screen overflow-y-auto pointer-events-none custom-scrollbar">
+    <div className="absolute bottom-0 md:top-0 left-0 z-40 p-4 w-full md:w-[400px] max-h-[80vh] md:max-h-screen overflow-y-auto pointer-events-none custom-scrollbar flex flex-col justify-end md:block">
       <div className="pointer-events-auto bg-cosmos-900/90 backdrop-blur-md border border-cosmos-500/50 rounded-2xl shadow-2xl shadow-neon-blue/10 overflow-hidden transition-all duration-500 ease-out">
 
         <div className="p-5 pb-4">
@@ -231,11 +231,11 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                 <Sparkles size={10} className="text-neon-purple" /> Mind-Melters
               </p>
 
-              <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-1 custom-scrollbar">
+              <div className="flex md:grid md:grid-cols-2 gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0 snap-x no-scrollbar">
                 {Object.entries(CONCEPT_CATEGORIES).map(([category, items]) => (
-                  <div key={category}>
+                  <div key={category} className="min-w-[160px] md:min-w-0 snap-start">
                     <h3 className="text-[10px] text-cosmos-500 font-mono uppercase mb-2 pl-1">{category}</h3>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="flex flex-col gap-2">
                       {items.map((concept) => (
                         <button
                           key={concept}

@@ -14,7 +14,7 @@ const App: React.FC = () => {
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [vizData, setVizData] = useState<VisualizationData | null>(null);
   const [currentParams, setCurrentParams] = useState<Record<string, number | boolean>>({});
-  const [viewSettings, setViewSettings] = useState<ViewSettings>({ zoom: 12, autoRotate: false, bloomStrength: 0.8 });
+  const [viewSettings, setViewSettings] = useState<ViewSettings>({ zoom: 12, autoRotate: false, bloomStrength: 0.8, color1: '#00f3ff', color2: '#bc13fe' });
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<VisualizationData[]>([]);
   const [isSharedView, setIsSharedView] = useState(false);
@@ -40,7 +40,7 @@ const App: React.FC = () => {
           if (sharedState.v) {
             setVizData(sharedState.v);
             setCurrentParams(sharedState.p || {});
-            setViewSettings(sharedState.c || { zoom: 12, autoRotate: false, bloomStrength: 0.8 });
+            setViewSettings(sharedState.c || { zoom: 12, autoRotate: false, bloomStrength: 0.8, color1: '#00f3ff', color2: '#bc13fe' });
             setState(AppState.VISUALIZING);
             setIsSharedView(true);
           }
@@ -73,7 +73,7 @@ const App: React.FC = () => {
     setVizData(null);
     setState(AppState.IDLE);
     setCurrentParams({});
-    setViewSettings({ zoom: 12, autoRotate: false, bloomStrength: 0.8 });
+    setViewSettings({ zoom: 12, autoRotate: false, bloomStrength: 0.8, color1: '#00f3ff', color2: '#bc13fe' });
     setError(null);
     window.history.replaceState(null, '', window.location.pathname);
     setIsSharedView(false);

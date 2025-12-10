@@ -23,6 +23,8 @@ export interface ViewSettings {
   zoom: number;
   autoRotate: boolean;
   bloomStrength: number;
+  color1: string;
+  color2: string;
 }
 
 export interface SharedState {

@@ -28,6 +28,8 @@ export const generatePhysicsVisualization = async (topic: string, apiKey: string
     - Define them in the 'controls' array.
     - In 'animationCode', a 'params' object is available. Access values via 'params.controlId'.
     - ALWAYS use 'params' for variables that define motion, color intensity, or geometric distortion.
+    - **COLORS**: Do NOT hardcode hex colors (like 0x00ffff). Instead, use 'params.color1' (Primary) and 'params.color2' (Secondary).
+    - Example: const material = new THREE.PointsMaterial({ color: new THREE.Color(params.color1) });
 
     Variables available in 'setupCode' scope:
     - scene: THREE.Scene
@@ -41,7 +43,7 @@ export const generatePhysicsVisualization = async (topic: string, apiKey: string
     - renderer: THREE.WebGLRenderer
     - THREE: The THREE.js namespace
     - time: number (elapsed time in seconds)
-    - params: object (key-value pairs matching the defined controls)
+    - params: object (contains controls + color1, color2)
 
     Coding Rules:
     - Do NOT create the scene, camera, or renderer. They are provided.
