@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { AppState, VisualizationData, VisualizationControl, ViewSettings } from '../types';
 import { Search, Info, Wand2, History, Sliders, Sparkles, Eye, RotateCcw, Atom, PanelLeftClose, PanelLeftOpen, Share2, Check } from 'lucide-react';
@@ -199,14 +200,14 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Describe a concept..."
-              className="w-full bg-cosmos-950/80 border border-cosmos-500/50 text-white rounded-xl px-4 py-2.5 pl-10 focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-all placeholder-cosmos-500 shadow-inner text-sm"
+              className="w-full bg-cosmos-950/80 border border-cosmos-500/50 text-white rounded-xl px-4 py-2.5 pl-10 focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-all placeholder-cosmos-500 shadow-inner text-sm relative z-10"
               disabled={state === AppState.GENERATING}
             />
-            <Search className="absolute left-3 top-3 text-cosmos-500 group-focus-within:text-neon-blue transition-colors" size={16} />
+            <Search className="absolute left-3 top-3 text-cosmos-500 group-focus-within:text-neon-blue transition-colors pointer-events-none z-20" size={16} />
             <button 
               type="submit"
               disabled={state === AppState.GENERATING || !input.trim()}
-              className="absolute right-2 top-2 p-1 bg-cosmos-700 hover:bg-neon-blue text-white rounded-lg transition-all disabled:opacity-50 disabled:hover:bg-cosmos-700"
+              className="absolute right-2 top-2 p-1 bg-cosmos-700 hover:bg-neon-blue text-white rounded-lg transition-all disabled:opacity-50 disabled:hover:bg-cosmos-700 z-20"
             >
               <Wand2 size={14} />
             </button>
@@ -425,3 +426,4 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     </div>
   );
 };
+    
