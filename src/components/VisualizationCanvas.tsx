@@ -23,11 +23,12 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
   const bloomPassRef = useRef<UnrealBloomPass | null>(null);
 
   // We need a ref for params so the animation loop accesses the latest values without closure staleness
-  const paramsRef = useRef(params);
+  // Inject colors into params so the generated code can access them
+  const paramsRef = useRef({ ...params, color1: viewSettings.color1, color2: viewSettings.color2 });
 
   useEffect(() => {
-    paramsRef.current = params;
-  }, [params]);
+    paramsRef.current = { ...params, color1: viewSettings.color1, color2: viewSettings.color2 };
+  }, [params, viewSettings.color1, viewSettings.color2]);
 
   // Update camera distance based on zoom setting
   useEffect(() => {
@@ -82,7 +83,11 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
     // Initial pos
     camera.position.z = viewSettings.zoom;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      preserveDrawingBuffer: true
+    });
     renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.toneMapping = THREE.ReinhardToneMapping;

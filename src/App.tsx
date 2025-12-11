@@ -169,6 +169,16 @@ const App: React.FC = () => {
     }
   };
 
+  const handleScreenshot = () => {
+    const canvas = document.querySelector('canvas');
+    if (canvas) {
+      const link = document.createElement('a');
+      link.download = `principia-${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  };
+
   return (
     <div className="relative w-full h-screen bg-cosmos-900 text-white overflow-hidden">
 
@@ -197,6 +207,7 @@ const App: React.FC = () => {
           onViewSettingsChange={setViewSettings}
           onHome={handleHome}
           onShare={handleShare}
+          onScreenshot={handleScreenshot}
         />
       )}
 

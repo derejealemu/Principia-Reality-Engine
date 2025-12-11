@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppState, VisualizationData, VisualizationControl, ViewSettings } from '../types';
-import { Search, Info, Wand2, History, Sliders, Sparkles, Eye, RotateCcw, Atom, PanelLeftClose, PanelLeftOpen, Share2, Check } from 'lucide-react';
+import { Search, Info, Wand2, History, Sliders, Sparkles, Eye, RotateCcw, Atom, PanelLeftClose, PanelLeftOpen, Share2, Check, Camera } from 'lucide-react';
 
 interface ControlPanelProps {
   state: AppState;
@@ -17,6 +17,7 @@ interface ControlPanelProps {
   onViewSettingsChange: (settings: ViewSettings) => void;
   onHome: () => void;
   onShare: () => void;
+  onScreenshot: () => void;
 }
 
 const CONCEPT_CATEGORIES = {
@@ -57,7 +58,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   viewSettings,
   onViewSettingsChange,
   onHome,
-  onShare
+  onShare,
+  onScreenshot
 }) => {
   const [input, setInput] = useState('');
   const [isExpanded, setIsExpanded] = useState(true);
@@ -184,6 +186,13 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                 </button>
               </div>
 
+              <button
+                onClick={onScreenshot}
+                className="p-1.5 text-cosmos-400 hover:text-white transition-colors"
+                title="Take Screenshot"
+              >
+                <Camera size={18} />
+              </button>
               <button
                 onClick={() => setIsUIHidden(true)}
                 className="p-1.5 text-cosmos-400 hover:text-white transition-colors"
@@ -324,6 +333,33 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                   <div className="flex justify-between text-[10px] text-cosmos-500 px-1">
                     <span>Off</span>
                     <span>Extreme</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-cosmos-100">Primary Color</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={viewSettings.color1}
+                        onChange={(e) => onViewSettingsChange({ ...viewSettings, color1: e.target.value })}
+                        className="w-8 h-8 rounded cursor-pointer border-none bg-transparent"
+                      />
+                      <span className="text-xs font-mono text-cosmos-400">{viewSettings.color1}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-cosmos-100">Secondary Color</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={viewSettings.color2}
+                        onChange={(e) => onViewSettingsChange({ ...viewSettings, color2: e.target.value })}
+                        className="w-8 h-8 rounded cursor-pointer border-none bg-transparent"
+                      />
+                      <span className="text-xs font-mono text-cosmos-400">{viewSettings.color2}</span>
+                    </div>
                   </div>
                 </div>
 
