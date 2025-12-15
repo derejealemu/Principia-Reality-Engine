@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppState, VisualizationData, VisualizationControl, ViewSettings } from '../types';
-import { Search, Info, Wand2, History, Sliders, Sparkles, Eye, RotateCcw, Atom, PanelLeftClose, PanelLeftOpen, Share2, Check, Camera } from 'lucide-react';
+import { Search, Info, Wand2, History, Sliders, Sparkles, Eye, RotateCcw, Atom, PanelLeftClose, PanelLeftOpen, Share2, Check, Camera, BrainCircuit, Orbit, Zap } from 'lucide-react';
 
 interface ControlPanelProps {
   state: AppState;
@@ -235,29 +235,48 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           )}
 
           {state === AppState.IDLE && isExpanded && !currentTitle && (
-            <div className="mt-4 border-t border-cosmos-500/30 pt-3">
-              <p className="text-[10px] text-cosmos-400 mb-3 font-semibold uppercase tracking-wider flex items-center gap-2">
-                <Sparkles size={10} className="text-neon-purple" /> Mind-Melters
-              </p>
+            <div className="mt-6 border-t border-cosmos-500/30 pt-4">
+              <div className="flex items-center gap-2 mb-4 px-1">
+                <div className="p-1 bg-neon-purple/10 rounded-md">
+                  <Sparkles size={14} className="text-neon-purple" />
+                </div>
+                <p className="text-xs text-cosmos-300 font-bold uppercase tracking-widest">
+                  Mind-Melters
+                </p>
+              </div>
 
-              <div className="flex md:grid md:grid-cols-2 gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0 snap-x no-scrollbar">
-                {Object.entries(CONCEPT_CATEGORIES).map(([category, items]) => (
-                  <div key={category} className="min-w-[160px] md:min-w-0 snap-start">
-                    <h3 className="text-[10px] text-cosmos-500 font-mono uppercase mb-2 pl-1">{category}</h3>
-                    <div className="flex flex-col gap-2">
-                      {items.map((concept) => (
-                        <button
-                          key={concept}
-                          onClick={() => handleExampleClick(concept)}
-                          className="text-xs text-left bg-cosmos-800/30 hover:bg-neon-blue/10 hover:text-neon-blue border border-cosmos-500/30 hover:border-neon-blue/50 text-cosmos-100 px-3 py-2 rounded-lg transition-all duration-300 group flex items-center justify-between"
-                        >
-                          <span className="truncate">{concept}</span>
-                          <Wand2 size={10} className="opacity-0 -translate-x-2 group-hover:translate-x-0 group-hover:opacity-100 transition-all text-neon-purple shrink-0" />
-                        </button>
-                      ))}
+              <div className="space-y-6 pb-2">
+                {Object.entries(CONCEPT_CATEGORIES).map(([category, items]) => {
+                  let Icon = Atom;
+                  let colorClass = "text-neon-blue";
+                  if (category === "Cosmos") { Icon = Orbit; colorClass = "text-neon-blue"; }
+                  if (category === "Quantum") { Icon = Zap; colorClass = "text-neon-purple"; }
+                  if (category === "Chaos & Math") { Icon = BrainCircuit; colorClass = "text-neon-pink"; }
+
+                  return (
+                    <div key={category} className="space-y-3">
+                      <div className="flex items-center gap-2 px-1">
+                        <Icon size={12} className={colorClass} />
+                        <h3 className="text-[10px] text-cosmos-400 font-mono uppercase tracking-wider">{category}</h3>
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        {items.map((concept) => (
+                          <button
+                            key={concept}
+                            onClick={() => handleExampleClick(concept)}
+                            className="group relative overflow-hidden text-left bg-cosmos-800/40 hover:bg-cosmos-800/80 border border-cosmos-500/20 hover:border-neon-blue/30 text-cosmos-100 px-4 py-3 rounded-xl transition-all duration-300"
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-r from-neon-blue/0 via-neon-blue/5 to-neon-purple/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="flex items-center justify-between relative z-10">
+                              <span className="text-xs font-medium group-hover:text-white transition-colors">{concept}</span>
+                              <Wand2 size={12} className="opacity-0 -translate-x-2 group-hover:translate-x-0 group-hover:opacity-100 transition-all text-neon-blue shrink-0" />
+                            </div>
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
