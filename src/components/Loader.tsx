@@ -12,7 +12,7 @@ export const Loader: React.FC = () => {
         Deriving Reality...
       </div>
       <div className="mt-2 text-cosmos-300 text-xs font-sans">
-        Gemini 3.0 Pro is thinking
+        Generating visualization...
       </div>
     </div>
   );
