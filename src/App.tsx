@@ -7,7 +7,6 @@ import { Loader } from './components/Loader';
 import { ApiKeyModal } from './components/ApiKeyModal';
 
 const STORAGE_KEY = 'physics_viz_history';
-const API_KEY_STORAGE = 'principia_api_key';
 
 const App: React.FC = () => {
   const [state, setState] = useState<AppState>(AppState.IDLE);
@@ -18,6 +17,13 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<VisualizationData[]>([]);
   const [isSharedView, setIsSharedView] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  const triggerToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    setToast({ message, type });
+  };
+
+  const closeToast = () => setToast(null);
 
   useEffect(() => {
     try {
@@ -60,12 +66,22 @@ const App: React.FC = () => {
   };
 
   const saveToHistory = (newItem: VisualizationData) => {
-    const updatedHistory = [newItem, ...history];
-    setHistory(updatedHistory);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedHistory));
-    } catch (e) {
-      console.error("Failed to save history", e);
+      const existing = localStorage.getItem(STORAGE_KEY);
+      let historyItems: VisualizationData[] = existing ? JSON.parse(existing) : [];
+      
+      // Evict oldest items if we exceed the limit
+      if (historyItems.length >= 20) {
+        historyItems = historyItems.slice(-19); // Keep last 19 + new item = 20 total
+      }
+      
+      historyItems.push(newItem);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(historyItems));
+      setHistory(historyItems);
+    } catch (error) {
+      console.error("Failed to save to history:", error);
+      triggerToast("Failed to save to history. Your visualization may not be saved.", "error");
+      // Do not update local state on failure
     }
   };
 
@@ -164,8 +180,10 @@ const App: React.FC = () => {
       const url = `${window.location.origin}${window.location.pathname}#${base64Data}`;
 
       navigator.clipboard.writeText(url);
+      triggerToast("Share link copied to clipboard!", "success");
     } catch (e) {
       console.error("Failed to generate share link", e);
+      triggerToast("Failed to copy share link.", "error");
     }
   };
 

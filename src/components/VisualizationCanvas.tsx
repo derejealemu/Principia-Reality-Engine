@@ -91,6 +91,28 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
     renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.toneMapping = THREE.ReinhardToneMapping;
+    
+    // Add WebGL context loss handling
+    const onWebGLContextLost = (event: Event) => {
+      console.warn('WebGL context lost', event);
+      // Optionally pause animation or show a warning to the user
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+        requestRef.current = null;
+      }
+    };
+
+    const onWebGLContextRestored = () => {
+      console.info('WebGL context restored');
+      // Restart animation loop when context is restored
+      if (!requestRef.current && sceneRef.current && cameraRef.current && rendererRef.current) {
+        animate();
+      }
+    };
+
+    renderer.domElement.addEventListener('webglcontextlost', onWebGLContextLost, false);
+    renderer.domElement.addEventListener('webglcontextrestored', onWebGLContextRestored, false);
+    
     containerRef.current.appendChild(renderer.domElement);
 
     // Orbit Controls
@@ -135,6 +157,11 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
       cameraRef.current.updateProjectionMatrix();
       rendererRef.current.setSize(width, height);
       composerRef.current.setSize(width, height);
+
+      // Sync Bloom resolution with viewport size
+      if (bloomPassRef.current) {
+        bloomPassRef.current.setSize(width, height);
+      }
     };
     window.addEventListener('resize', handleResize);
 
@@ -158,12 +185,12 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
     const controls = controlsRef.current;
 
     // 1. Cleanup - Remove old objects
-    const cleanMaterial = (material: any) => {
+    const cleanMaterial = (material: THREE.Material) => {
       material.dispose();
       // Dispose textures if present
       for (const key of Object.keys(material)) {
-        const value = material[key];
-        if (value && typeof value === 'object' && 'minFilter' in value) {
+        const value = material[key as keyof typeof material];
+        if (value && typeof value === 'object' && 'dispose' in value && typeof value.dispose === 'function') {
           value.dispose();
         }
       }
@@ -297,7 +324,7 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
 
       // Idle Animation Function
       // Renamed unused params to _camera, _renderer, _THREE to satisfy strict TypeScript rules
-      animationFn = (scene: THREE.Scene, _camera: THREE.Camera, _renderer: THREE.WebGLRenderer, _THREE: any, time: number) => {
+      animationFn = (scene: THREE.Scene, _camera: THREE.Camera, _renderer: THREE.WebGLRenderer, _THREE: typeof THREE, time: number) => {
         const p = scene.getObjectByName("idle_viz");
         if (p) {
           // Rotate
@@ -313,17 +340,42 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
     } else {
       // --- GENERATED MODE: Execute Gemini Code ---
       try {
+        // Simple sanitization checks against potentially dangerous patterns
+        const dangerousPatterns = [
+          /import\s+/,  // Prevent module imports
+          /require\s*\(/,  // Prevent require calls
+          /process\s*\./, // Prevent process access
+          /global\s*\./,  // Prevent global access
+          /eval\s*\(/,   // Prevent eval
+          /setTimeout\s*\(/, // Prevent setTimeout (as example)
+          /setInterval\s*\(/, // Prevent setInterval
+        ];
+
+        const setupCode = data.setupCode;
+        for (const pattern of dangerousPatterns) {
+          if (pattern.test(setupCode)) {
+            throw new Error(`Potentially dangerous code detected in setup: ${pattern}`);
+          }
+        }
+
         const setupFunction = new Function(
           'scene',
           'camera',
           'renderer',
           'THREE',
-          data.setupCode
+          setupCode
         );
 
         setupFunction(scene, camera, renderer, THREE);
 
         if (data.animationCode) {
+          // Sanitize animation code as well
+          for (const pattern of dangerousPatterns) {
+            if (pattern.test(data.animationCode)) {
+              throw new Error(`Potentially dangerous code detected in animation: ${pattern}`);
+            }
+          }
+
           animationFn = new Function(
             'scene',
             'camera',
@@ -337,6 +389,7 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
 
       } catch (err) {
         console.error("Error executing generated visualization code:", err);
+        // Don't throw error, let the user continue as we're in a non-critical animation loop
       }
 
       // Ensure auto-rotate matches view settings in Generated mode

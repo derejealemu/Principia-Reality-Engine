@@ -9,8 +9,8 @@ export const generatePhysicsVisualization = async (topic: string, apiKey: string
 
   // Initialize client with the user's key for this specific request
   const ai = new GoogleGenAI({ apiKey: apiKey });
-  // Updated to gemini-3-pro-preview for better reasoning and higher rate limits
-  const modelId = "gemini-3-pro-preview";
+  // Updated to gemini-3.6-flash for best quality and performance
+  const modelId = "gemini-3.6-flash";
 
   const systemInstruction = `
     You are a world-class creative coder, expert in Three.js, GLSL shaders, and high-level theoretical physics. 
@@ -51,6 +51,12 @@ export const generatePhysicsVisualization = async (topic: string, apiKey: string
     - Do NOT load external assets.
     - Clean up is handled externally.
     - Use extensive math in 'animationCode'.
+    
+    NEW IMPROVMENTS:
+    - Utilize advanced GLSL techniques for dynamic effects when possible (e.g., noise functions, wave manipulation)
+    - Create visually striking particle systems with varied motion patterns
+    - Include multiple lighting effects where appropriate to enhance depth (ambient, directional, point lights)
+    - Implement some form of procedural distortion or warping for complex systems
 
     Example Concept: "Strange Attractor"
     Example Response Structure (simplified):
