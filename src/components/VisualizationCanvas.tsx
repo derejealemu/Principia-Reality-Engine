@@ -25,6 +25,7 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
   // We need a ref for params so the animation loop accesses the latest values without closure staleness
   // Inject colors into params so the generated code can access them
   const paramsRef = useRef({ ...params, color1: viewSettings.color1, color2: viewSettings.color2 });
+  const animateRef = useRef<Function | null>(null);
 
   useEffect(() => {
     paramsRef.current = { ...params, color1: viewSettings.color1, color2: viewSettings.color2 };
@@ -106,7 +107,7 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
       console.info('WebGL context restored');
       // Restart animation loop when context is restored
       if (!requestRef.current && sceneRef.current && cameraRef.current && rendererRef.current) {
-        animate();
+        animateRef.current?.();
       }
     };
 
@@ -427,6 +428,8 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
         renderer.render(scene, camera);
       }
     };
+
+    animateRef.current = animate;
 
     animate();
 

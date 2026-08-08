@@ -7,6 +7,7 @@ import { Loader } from './components/Loader';
 import { ApiKeyModal } from './components/ApiKeyModal';
 
 const STORAGE_KEY = 'physics_viz_history';
+const API_KEY_STORAGE = 'physics_viz_api_key';
 
 const App: React.FC = () => {
   const [state, setState] = useState<AppState>(AppState.IDLE);
@@ -17,13 +18,11 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<VisualizationData[]>([]);
   const [isSharedView, setIsSharedView] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  // const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
-  const triggerToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
-    setToast({ message, type });
-  };
-
-  const closeToast = () => setToast(null);
+  // const triggerToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+  //   setToast({ message, type });
+  // };
 
   useEffect(() => {
     try {
