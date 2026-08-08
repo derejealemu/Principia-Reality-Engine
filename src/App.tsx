@@ -79,7 +79,6 @@ const App: React.FC = () => {
       setHistory(historyItems);
     } catch (error) {
       console.error("Failed to save to history:", error);
-      triggerToast("Failed to save to history. Your visualization may not be saved.", "error");
       // Do not update local state on failure
     }
   };
@@ -179,10 +178,10 @@ const App: React.FC = () => {
       const url = `${window.location.origin}${window.location.pathname}#${base64Data}`;
 
       navigator.clipboard.writeText(url);
-      triggerToast("Share link copied to clipboard!", "success");
+      // triggerToast("Share link copied to clipboard!", "success");
     } catch (e) {
       console.error("Failed to generate share link", e);
-      triggerToast("Failed to copy share link.", "error");
+      // triggerToast("Failed to copy share link.", "error");
     }
   };
 
