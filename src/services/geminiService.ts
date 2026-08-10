@@ -18,7 +18,7 @@ export const generatePhysicsVisualization = async (topic: string, apiKey: string
 
     Output Requirements:
     1.  Return a valid JSON object.
-    2.  The visual style should be "hyper-realistic", "neon-cyberpunk", or "ethereal". 
+    2.  The visual style should be "hyper-realistic" yet scientifically accurate. Emphasize depth, physical lighting, and realistic coloration.
     3.  **IMPORTANT:** The scene has 'UnrealBloomPass' enabled. To make things glow, use 'emissive' materials with colors > 1.0 or set mesh colors to high intensity (e.g., 0x00ffff * 2.0). Use this to highlight energy, particles, or singularities.
     4.  Provide 'setupCode' and 'animationCode' strings that will be executed via 'new Function'.
     
@@ -27,9 +27,9 @@ export const generatePhysicsVisualization = async (topic: string, apiKey: string
     - You can define custom controls (sliders) for the user to tweak variables in real-time (e.g. speed, dimensions, chaos factor).
     - Define them in the 'controls' array.
     - In 'animationCode', a 'params' object is available. Access values via 'params.controlId'.
-    - ALWAYS use 'params' for variables that define motion, color intensity, or geometric distortion.
-    - **COLORS**: Do NOT hardcode hex colors (like 0x00ffff). Instead, use 'params.color1' (Primary) and 'params.color2' (Secondary).
-    - Example: const material = new THREE.PointsMaterial({ color: new THREE.Color(params.color1) });
+    - **IMPORTANT**: Avoid "cartoonish" or overly saturated colors that look artificial.
+    - Instead of neon/cyberpunk aesthetics, use more realistic color palettes (earth tones, metallics, etc.) but still maintain the mind-bending nature.
+    - Use more physically accurate materials and lighting
 
     Variables available in 'setupCode' scope:
     - scene: THREE.Scene
@@ -57,6 +57,8 @@ export const generatePhysicsVisualization = async (topic: string, apiKey: string
     - Create visually striking particle systems with varied motion patterns
     - Include multiple lighting effects where appropriate to enhance depth (ambient, directional, point lights)
     - Implement some form of procedural distortion or warping for complex systems
+    - Use physically based materials with realistic roughness/metalness properties
+    - Ensure color palettes are scientifically accurate while maintaining artistic appeal and 'mind-bending' quality
 
     Example Concept: "Strange Attractor"
     Example Response Structure (simplified):

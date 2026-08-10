@@ -137,11 +137,16 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
     composer.addPass(bloomPass);
 
     // Default Lights
-    const ambientLight = new THREE.AmbientLight(0x404040, 2);
+    const ambientLight = new THREE.AmbientLight(0x333333, 0.8); // Reduced intensity and darker color
     scene.add(ambientLight);
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.7); // Reduced intensity
     dirLight.position.set(5, 10, 7);
-    scene.add(dirLight);
+    dirLight.castShadow = true; // Enable shadows
+    
+    // Add a subtle point light for more realistic lighting
+    const pointLight = new THREE.PointLight(0xffffff, 0.3, 100);
+    pointLight.position.set(-2, 3, 5);
+    scene.add(pointLight);
 
     sceneRef.current = scene;
     cameraRef.current = camera;
@@ -263,8 +268,8 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
       const colors = new Float32Array(particleCount * 3);
       const sizes = new Float32Array(particleCount);
 
-      const color1 = new THREE.Color(0x00f3ff); // Neon Blue
-      const color2 = new THREE.Color(0xbc13fe); // Neon Purple
+      const color1 = new THREE.Color(0x555555); // Neutral gray for more realistic look
+      const color2 = new THREE.Color(0x999999); // Light gray for contrast
 
       for (let i = 0; i < particleCount; i++) {
         let x = 0, y = 0, z = 0;
@@ -315,8 +320,8 @@ export const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({ data, 
         vertexColors: true,
         transparent: true,
         opacity: 0.6,
-        blending: THREE.AdditiveBlending,
         depthWrite: false,
+        color: new THREE.Color(0x888888), // Using neutral gray instead of neon
       });
 
       const points = new THREE.Points(geometry, material);
